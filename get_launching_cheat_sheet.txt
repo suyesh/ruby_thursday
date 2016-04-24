@@ -1,0 +1,111 @@
+Get Launching Cheat Sheet provided by RubyThursday.com
+
+1. Open terminal and check versions of Ruby and Rails against production server params or to make sure you are using the most recent stable versions.
+  $ ruby -v
+  $ rvm list
+  $ rvm list known
+  $ rvm install ruby 2.2.1
+  $ rvm list
+  $ ruby -v
+  $ gem install rails
+  $ rails -v
+
+2. Navigate to where you want to create your app.
+  $ cd ~/Sites
+
+3. Create new repo/app without unit tests 
+  $ rails new {name} -T  
+  example: $ rails new ruby_thursday -T
+  or if needing to a specific version of rails: $ rails _4.1.0_ new ruby_thursday -T
+
+4. Navigate into new app
+  $ cd ruby_thursday
+
+5. Set up git
+  $ git init
+
+6. Set up Github and make first commit
+  copy/paste from Github to create remote repo
+  $ git add .
+  $ git commit -m "Initial commit"
+
+7. Open app in favorite text editor. 
+  $ subl .
+
+8. Set Ruby version in Gemfile
+  ruby '2.2.1'
+
+9. Review standard gems change any per preferences
+
+#will need to install Postgres on your machine https://wiki.postgresql.org/wiki/Detailed_installation_guides
+  gem ‘pg’
+
+10. Set up preferred test and development gems
+  group :development, :test do
+    gem 'better_errors'
+    #will need to install Qt on your machine https://github.com/thoughtbot/capybara-webkit/wiki/Installing-Qt-and-compiling-capybara-webkit
+    gem 'capybara-webkit'
+    gem 'factory_girl_rails'
+    gem 'ffaker'
+    gem 'database_cleaner'
+    gem 'letter_opener'
+    gem 'rspec-rails'
+    gem 'pry'
+    gem 'pry-nav'
+    gem 'pry-rails', '~> 0.3.2'
+    gem 'simple_bdd'
+    gem 'shoulda-matchers'
+    gem 'spring' 
+  end 
+
+11. Install the gems
+  $ bundle
+
+12. Edit config/database.yml with preferred database and database names
+  adapter: postgresql
+  
+  development:
+  <<: *default
+  database: db/ruby_thursday_development
+
+  test:
+    <<: *default
+    database: db/ruby_thursday_test
+
+  production:
+    <<: *default
+    database: db/ruby_thursday_production
+
+
+13. Create database
+  $ rake db:create  
+
+14. Install rspec
+  $ rails generate rspec:install
+
+15. Edit rails_helper.rb
+  require 'spec_helper'
+  require File.expand_path("../../config/environment", __FILE__)
+  require 'rspec/rails'
+  require 'capybara/rspec'
+  Capybara.javascript_driver = :webkit
+  require 'simple_bdd'
+  
+  config.include SimpleBdd, type: :feature
+  # config.include Devise::TestHelpers, :type => :controller
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+
+16. Commit set up 
+  $ git add .
+  $ git commit -m "Set up app with development gems, rspec, and pg"
